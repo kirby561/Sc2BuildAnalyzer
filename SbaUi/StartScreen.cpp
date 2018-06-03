@@ -8,7 +8,7 @@ StartScreen::StartScreen(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	ReplayParser parser;
+	ReplayParser parser("C:/Users/Alex/Documents/Code/Sc2BuildAnalyzer/SbaCore/Dependencies/s2protocol/s2_cli.py");
 	parser.Parse("Yo");
 }
 

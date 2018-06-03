@@ -37,9 +37,12 @@ private:
  **/
 class ReplayParser {
 public:
-	ReplayParser();
+	ReplayParser(QString sc2ProtocolPath);
 	virtual ~ReplayParser();
 
 	ParseResult Parse(QString replayPath);
+
+private:
+	QString _sc2ProtocolPath;
 };
 
