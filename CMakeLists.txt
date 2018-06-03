@@ -13,6 +13,8 @@ add_subdirectory(SbaCore)
 add_subdirectory(SbaUi)
 
 # Copy QT binaries
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/SbaUi/Debug)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/SbaUi/Release)
 add_custom_target(Qt5CopyBinaries
   # debug version
   COMMAND ${CMAKE_COMMAND} -E copy ${Qt5Core_DIR}/../../../bin/libEGLd.dll          ${CMAKE_BINARY_DIR}/SbaUi/Debug
