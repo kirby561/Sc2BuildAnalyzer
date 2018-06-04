@@ -8,8 +8,8 @@ StartScreen::StartScreen(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	ReplayParser parser("C:/Users/Alex/Documents/Code/Sc2BuildAnalyzer/SbaCore/Dependencies/s2protocol/s2_cli.py");
-	parser.Parse("Yo");
+	ReplayParser parser;
+	parser.Parse("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer/Ascension to Aiur LE.SC2Replay");
 }
 
 StartScreen::~StartScreen()
