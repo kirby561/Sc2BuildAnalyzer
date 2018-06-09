@@ -8,6 +8,7 @@ find_library(Python27d "python27_d" PATHS "Dependencies/Python27/Lib")
 					
 add_executable(SbaPythonReader
 				"Source/Main.cpp"
+				"Source/ReplayReader.h"
 				"Source/ReplayReader.cpp")
 
 target_link_libraries(SbaPythonReader Qt5::Core)

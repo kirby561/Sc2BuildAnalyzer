@@ -1,17 +1,22 @@
 #pragma once
 
 #include <QString>
+#include <QJsonObject>
 #include <stdio.h>
 #include "Log.h"
+#include "ReplayData/Sc2Replay.h"
 
-class ParseResult {
+/**
+ * Contains the parsed replay or an error if an error occurred.
+ **/
+class ReplayParseResult {
 public:
-	ParseResult(QString replayJson) {
-		_replayJson = replayJson;
+	ReplayParseResult(Sc2Replay* replay) {
+		_replay = replay;
 		_succeeded = true;
 	}
 
-	ParseResult(QString errorDetails, bool succeeded) {
+	ReplayParseResult(QString errorDetails, bool succeeded) {
 		if (succeeded) {
 			Log::Error("This constructor should only be used for parse errors.");
 			std::abort();
@@ -21,25 +26,28 @@ public:
 	}
 
 	QString GetErrorDetails() { return _errorDetails; }
-	QString GetReplayJson() { return _replayJson; }
+	Sc2Replay* GetReplay() { return _replay; }
 
 	bool Succeeded() { return _succeeded; }
 
 private:
-	QString _replayJson;
+	Sc2Replay* _replay = nullptr;
 	QString _errorDetails;
 	bool _succeeded = false;
 };
 
 /**
- * This uses a Python interpreter to parse the replay file so there should only
- *		really be one of these at a time.
+ * This uses a Python interpreter to parse replay files into an Sc2Replay.
  **/
 class ReplayParser {
 public:
 	ReplayParser();
 	virtual ~ReplayParser();
 
-	ParseResult Parse(QString replayPath);
+	ReplayParseResult Parse(QString replayPath);
+
+private:
+	int64_t GetInt64FromJson(QString key, QJsonObject obj);
+	QString GetStringFromJson(QString key, QJsonObject obj);
 };
 
