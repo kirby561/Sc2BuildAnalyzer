@@ -46,14 +46,19 @@ add_custom_target(CopyDependencies
   # S2 protocol
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/s2protocol ${CMAKE_BINARY_DIR}/SbaUi/Debug/s2protocol
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/s2protocol ${CMAKE_BINARY_DIR}/SbaUi/Release/s2protocol
+
+  # Resources
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaUi/Resources ${CMAKE_BINARY_DIR}/SbaUi/Debug/Resources
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaUi/Resources ${CMAKE_BINARY_DIR}/SbaUi/Release/Resources
   
   # Output Message
   COMMENT "Copying from '${Qt5Core_DIR}/../../bin/' to '${CMAKE_BINARY_DIR}'" VERBATIM
   COMMENT "Copying s2protocol from 'SbaPythonReader/Dependencies/s2protocol' to '${CMAKE_BINARY_DIR}'" VERBATIM
+  COMMENT "Copying resources from 'SbaUi/Resources' to '${CMAKE_BINARY_DIR}'" VERBATIM
 )
 
 add_dependencies(SbaCore CopyDependencies)
 add_dependencies(SbaCore SbaPythonReader)
 
 # Make the UI the startup project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SbaUi)
+#set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT SbaUi)
