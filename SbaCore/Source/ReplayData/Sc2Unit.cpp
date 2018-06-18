@@ -77,6 +77,7 @@ Sc2Unit Sc2Unit::Units[] = {
 	new Sc2Unit(FleetBeacon, "FleetBeacon", 43, 300, 200, true),
 	new Sc2Unit(TemplarArchives, "TemplarArchives", 36, 150, 200, true),
 	new Sc2Unit(DankShrine, "DarkShrine", 71, 150, 150, true),
+	new Sc2Unit(Stargate, "Stargate", 43, 150, 150, true),
 	
 		// Zerg Units
 	new Sc2Unit(Drone, "Drone", 12, 50, 0, 1),

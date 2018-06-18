@@ -79,6 +79,7 @@ public:
 		FleetBeacon,
 		TemplarArchives,
 		DankShrine,
+		Stargate,
 
 		// Zerg Units
 		Drone,

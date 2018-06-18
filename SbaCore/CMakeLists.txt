@@ -9,6 +9,8 @@ add_library(SbaCore STATIC
 				"Source/ReplayData/Sc2Player.h"
 				"Source/ReplayData/Sc2Replay.h"
 				"Source/ReplayParser.h"
+				"Source/ReplayData/Sc2Unit.h"
+				"Source/ReplayData/Sc2Unit.cpp"
 				"Source/ReplayParser.cpp"
 				"Source/Utility/Log.h"
 				"Source/Utility/Log.cpp")
