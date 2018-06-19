@@ -6,3 +6,4 @@
 #include "Sc2EventIds.h"
 #include "Sc2Player.h"
 #include "Sc2Replay.h"
+#include "Sc2Unit.h"

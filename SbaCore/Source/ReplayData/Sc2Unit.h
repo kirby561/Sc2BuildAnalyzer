@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QString>
+#include <QHash>
+#include "Log.h"
 
 class Sc2Unit {
 public:
@@ -14,7 +16,7 @@ public:
 		Hellion,
 		WidowMine,
 		Cyclone,
-		Tank,
+		SiegeTank,
 		Thor,
 		Viking,
 		Medivac,
@@ -120,16 +122,51 @@ public:
 		UltraliskCavern,
 		CreepTumor,
 
+		// Invalid
+		Invalid,
+
 		// Count
 		NumberOfUnits
 	};
 
+	Sc2Unit();
 	Sc2Unit(UnitId unitId, QString unitName, int buildTimeSecs, int mineralCost, int gasCost, float supplyCost);
 	Sc2Unit(UnitId unitId, QString unitName, int buildTimeSecs, int mineralCost, int gasCost, bool isBuilding);
 	Sc2Unit(UnitId unitId, QString unitName, int buildTimeSecs, int mineralCost, int gasCost, float supplyCost, bool isBuilding);
 
-	// An array of all the units
-	const Sc2Unit Units[];
+	UnitId GetUnitId() const { return _unitId; }
+	QString GetUnitName() const { return _unitName; }
+	int GetBuildTimeSecs() const { return _buildTimeSecs; }
+	int GetMineralCost() const { return _mineralCost; }
+	int GetGasCost() const { return _gasCost; }
+	float GetSupplyCost() const { return _supplyCost; }
+	bool IsBuilding() const { return _isBuilding; }	
+	bool IsValid() const { return _unitId != Invalid; }
+
+	/**
+	 * This should be called before mapping names to units.  This initializes
+	 *    the table that does the mapping.
+	 */
+	static void InitUnitTable() {
+		for (int i = 0; i < NumberOfUnits; i++) {
+			_unitMap.insert(Units[i].GetUnitName(), Units[i]);
+		}
+	}
+
+	/**
+	 * Creates an Sc2Unit of the given name.
+	 * @param unitName The name of the unit to find.
+	 * @returns Returns the created unit or Units[Invalid] if the name did not match a known unit.
+	 **/
+	static Sc2Unit CreateUnitByName(QString unitName) {
+		auto unitItr = _unitMap.find(unitName);
+		if (unitItr != _unitMap.end()) {
+			return *unitItr;
+		}
+
+		Log::Error("Did not recognize unit name: " + unitName.toStdString());
+		return Units[Invalid];
+	}
 
 private:
 	UnitId _unitId;
@@ -139,4 +176,10 @@ private:
 	int _gasCost;
 	float _supplyCost;
 	bool _isBuilding;
+
+	// A mapping of Unit Name to Sc2Unit
+	static QHash<QString, Sc2Unit> _unitMap;
+	
+	// An array of all the units
+	const static Sc2Unit Units[];
 };

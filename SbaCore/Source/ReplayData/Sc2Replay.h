@@ -16,6 +16,8 @@ public:
 		_players.append(player);
 	}
 
+	const QVector<Sc2CreationEvent>* GetEvents() { return &_creationEvents; }
+
 private:
 	QVector<Sc2CreationEvent> _creationEvents;
 	QVector<Sc2Player> _players;

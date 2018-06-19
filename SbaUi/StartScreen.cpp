@@ -1,6 +1,7 @@
 #include "startscreen.h"
 #include "ui_startscreen.h"
 #include "ReplayParser.h"
+#include "Build.h"
 
 StartScreen::StartScreen(QWidget *parent) :
     QMainWindow(parent),
@@ -14,8 +15,24 @@ StartScreen::StartScreen(QWidget *parent) :
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
 
+	Sc2Unit::InitUnitTable();
     ReplayParser parser;
-    ReplayParseResult result = parser.Parse("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer/Ascension to Aiur LE.SC2Replay");
+    //ReplayParseResult result = parser.Parse("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer/Ascension to Aiur LE.SC2Replay");
+	//"C:\Users\Alex\Documents\StarCraft II\Accounts\50202609\1-S2-1-1986271\Replays\Multiplayer\Catalyst LE (37).SC2Replay"
+	ReplayParseResult result = parser.Parse("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1 - S2 - 1 - 1986271/Replays/Multiplayer/Catalyst LE(37).SC2Replay");
+
+	if (result.Succeeded()) {
+		Build build = Build::FromReplay(result.GetReplay());
+
+		const QList<BuildEntry>& order = build.GetOrder();
+		for (auto entryItr = order.begin(); entryItr != order.end(); entryItr++) {
+			Log::Message(QString("%1: %2").arg(entryItr->TimestampSecs).arg(entryItr->Unit.GetUnitName()).toStdString());
+		}
+
+		delete result.GetReplay();
+	} else {
+		Log::Error("Failed to load the replay.  Reason: " + result.GetErrorDetails().toStdString());
+	}
 }
 
 void StartScreen::on_pushButton_2_clicked()

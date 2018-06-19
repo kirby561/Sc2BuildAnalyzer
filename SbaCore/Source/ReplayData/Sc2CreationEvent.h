@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Sc2EventIds.h"
+#include <QString>
 
 class Sc2CreationEvent {
 public:
 	Sc2CreationEvent() {}
 
-	double GetTimestampMs() { return GameLoop / GameLoopsPerSecond; }
+	double GetTimestampSecs() const { return GameLoop / GameLoopsPerSecond; }
 
 	QString Event = "NNet.Replay.Tracker.SUnitBornEvent";
 	QString EventId = Sc2EventId::SUnitBornEvent;
