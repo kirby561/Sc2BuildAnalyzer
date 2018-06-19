@@ -6,7 +6,7 @@ void Build::AddEntry(BuildEntry entry) {
 
 Build Build::FromReplay(Sc2Replay* replay) {
 	Build result;
-	const QVector<Sc2CreationEvent>* events = replay->GetEvents();
+	const QVector<Sc2UnitEvent>* events = replay->GetEvents();
 	for (auto eventItr = events->constBegin(); eventItr != events->end(); eventItr++) {
 		Sc2Unit unit = Sc2Unit::CreateUnitByName(eventItr->UnitTypeName);
 

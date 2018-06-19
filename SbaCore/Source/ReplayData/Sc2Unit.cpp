@@ -143,3 +143,18 @@ Sc2Unit::Sc2Unit(UnitId unitId, QString unitName, int buildTimeSecs, int mineral
 	_supplyCost = supplyCost;
 	_isBuilding = isBuilding;
 }
+
+void Sc2Unit::InitUnitTable() {
+	for (int i = 0; i < NumberOfUnits; i++) {
+		_unitMap.insert(Units[i].GetUnitName(), Units[i]);
+	}
+}
+
+Sc2Unit Sc2Unit::CreateUnitByName(QString unitName) {
+	auto unitItr = _unitMap.find(unitName);
+	if (unitItr != _unitMap.end()) {
+		return *unitItr;
+	}
+
+	return Units[Invalid];
+}

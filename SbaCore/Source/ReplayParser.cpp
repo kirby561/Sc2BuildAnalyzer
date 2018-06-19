@@ -47,9 +47,10 @@ ReplayParseResult ReplayParser::Parse(QString replayPath) {
 			QJsonObject obj = document.object();
 			QJsonValue eventType = obj.value("_eventid");
 			if (!eventType.isUndefined()) {
-				int64_t eventId = eventType.toInt();
-				if (eventId == Sc2EventId::SUnitBornEvent) {
-					Sc2CreationEvent event;
+				Sc2EventId::Sc2EventIds eventId = (Sc2EventId::Sc2EventIds)eventType.toInt();
+				if (eventId == Sc2EventId::SUnitBornEvent || eventId == Sc2EventId::SUnitInitEvent) {
+					Sc2UnitEvent event(eventId);
+
 					event.UnitTagIndex = GetInt64FromJson("m_unitTagIndex", obj);
 					event.ControlPlayerId = GetInt64FromJson("m_controlPlayerId", obj);
 					event.GameLoop = GetInt64FromJson("_gameloop", obj);

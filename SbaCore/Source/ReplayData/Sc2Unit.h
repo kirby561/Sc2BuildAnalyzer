@@ -147,26 +147,14 @@ public:
 	 * This should be called before mapping names to units.  This initializes
 	 *    the table that does the mapping.
 	 */
-	static void InitUnitTable() {
-		for (int i = 0; i < NumberOfUnits; i++) {
-			_unitMap.insert(Units[i].GetUnitName(), Units[i]);
-		}
-	}
+	static void InitUnitTable();
 
 	/**
 	 * Creates an Sc2Unit of the given name.
 	 * @param unitName The name of the unit to find.
 	 * @returns Returns the created unit or Units[Invalid] if the name did not match a known unit.
 	 **/
-	static Sc2Unit CreateUnitByName(QString unitName) {
-		auto unitItr = _unitMap.find(unitName);
-		if (unitItr != _unitMap.end()) {
-			return *unitItr;
-		}
-
-		Log::Error("Did not recognize unit name: " + unitName.toStdString());
-		return Units[Invalid];
-	}
+	static Sc2Unit CreateUnitByName(QString unitName);
 
 private:
 	UnitId _unitId;

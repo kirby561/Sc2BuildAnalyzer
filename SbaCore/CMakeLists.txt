@@ -4,8 +4,9 @@ include_directories("Source"
 			
 add_library(SbaCore STATIC
 				"Source/ReplayData/ReplayData.h"
-				"Source/ReplayData/Sc2CreationEvent.h"
+				"Source/ReplayData/Sc2UnitEvent.h"
 				"Source/ReplayData/Sc2EventIds.h"
+				"Source/ReplayData/Sc2EventIds.cpp"
 				"Source/ReplayData/Sc2Player.h"
 				"Source/ReplayData/Sc2Replay.h"
 				"Source/ReplayParser.h"

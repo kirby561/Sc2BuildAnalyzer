@@ -3,14 +3,19 @@
 #include "Sc2EventIds.h"
 #include <QString>
 
-class Sc2CreationEvent {
+class Sc2UnitEvent {
 public:
-	Sc2CreationEvent() {}
+	Sc2UnitEvent() {}
+
+	Sc2UnitEvent(Sc2EventId::Sc2EventIds id) {
+		Event = Sc2EventId::EventIdTable[id];
+		EventId = id;
+	}
 
 	double GetTimestampSecs() const { return GameLoop / GameLoopsPerSecond; }
 
-	QString Event = "NNet.Replay.Tracker.SUnitBornEvent";
-	QString EventId = Sc2EventId::SUnitBornEvent;
+	QString Event;
+	Sc2EventId::Sc2EventIds EventId;
 
 	int64_t UnitTagIndex = -1;
 	int64_t UnitTagRecycle = -1;
