@@ -142,6 +142,7 @@ public:
 	float GetSupplyCost() const { return _supplyCost; }
 	bool IsBuilding() const { return _isBuilding; }	
 	bool IsValid() const { return _unitId != Invalid; }
+	bool IsType(UnitId unitId) { return _unitId == unitId; }
 
 	/**
 	 * This should be called before mapping names to units.  This initializes
