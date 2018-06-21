@@ -2,6 +2,7 @@
 #include "ui_startscreen.h"
 #include "ReplayParser.h"
 #include "Build.h"
+#include "Resources.h"
 
 StartScreen::StartScreen(QWidget *parent) :
     QMainWindow(parent),
@@ -9,17 +10,14 @@ StartScreen::StartScreen(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QPixmap bkgnd(".\\Debug\\Resources\\Image\\logo.jpg");
+    QPixmap bkgnd(Resources::GetPath("Images/logo.jpg"));
     bkgnd = bkgnd.scaled(this->size(), Qt::AspectRatioMode::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
 
-	Sc2Unit::InitUnitTable();
     ReplayParser parser;
-    //ReplayParseResult result = parser.Parse("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer/Ascension to Aiur LE.SC2Replay");
-	//"C:\Users\Alex\Documents\StarCraft II\Accounts\50202609\1-S2-1-1986271\Replays\Multiplayer\Catalyst LE (37).SC2Replay"
-	ReplayParseResult result = parser.Parse("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer/Catalyst LE (37).SC2Replay");
+	ReplayParseResult result = parser.Parse(Resources::GetPath("Replays/TestReplay1.SC2Replay"));
 
 	if (result.Succeeded()) {
 		std::pair<Build, Build> builds = Build::FromReplay(result.GetReplay());

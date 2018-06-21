@@ -5,6 +5,8 @@ include_directories("."
 
 add_executable(SbaUi
 				"Main.cpp"
+				"Resources.h"
+				"Resources.cpp"
 				"StartScreen.cpp"
 				"StartScreen.h"
 				"StartScreen.ui")
