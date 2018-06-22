@@ -46,6 +46,10 @@ add_custom_target(CopyDependencies
   # S2 protocol
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/s2protocol ${CMAKE_BINARY_DIR}/SbaUi/Debug/s2protocol
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/s2protocol ${CMAKE_BINARY_DIR}/SbaUi/Release/s2protocol
+  
+  # Python
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/Bin ${CMAKE_BINARY_DIR}/SbaUi/Debug
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/Bin ${CMAKE_BINARY_DIR}/SbaUi/Release
 
   # Resources
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaUi/Resources ${CMAKE_BINARY_DIR}/SbaUi/Debug/Resources
