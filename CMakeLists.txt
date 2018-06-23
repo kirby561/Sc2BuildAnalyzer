@@ -48,8 +48,12 @@ add_custom_target(CopyDependencies
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/s2protocol ${CMAKE_BINARY_DIR}/SbaUi/Release/s2protocol
   
   # Python
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/Bin ${CMAKE_BINARY_DIR}/SbaUi/Debug
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/Bin ${CMAKE_BINARY_DIR}/SbaUi/Release
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/DLLs ${CMAKE_BINARY_DIR}/SbaUi/Debug/DLLs
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/Lib ${CMAKE_BINARY_DIR}/SbaUi/Debug/Lib
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/python27.dll ${CMAKE_BINARY_DIR}/SbaUi/Debug
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/DLLs ${CMAKE_BINARY_DIR}/SbaUi/Release/DLLs
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/Lib ${CMAKE_BINARY_DIR}/SbaUi/Release/Lib
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaPythonReader/Dependencies/Python27/python27.dll ${CMAKE_BINARY_DIR}/SbaUi/Release
 
   # Resources
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/SbaUi/Resources ${CMAKE_BINARY_DIR}/SbaUi/Debug/Resources
