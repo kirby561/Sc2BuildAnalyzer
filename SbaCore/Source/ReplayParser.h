@@ -8,6 +8,7 @@
 
 /**
  * Contains the parsed replay or an error if an error occurred.
+ * The caller is responsible for cleaning up the Sc2Replay that is created on Success.
  **/
 class ReplayParseResult {
 public:

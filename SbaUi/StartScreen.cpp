@@ -3,6 +3,7 @@
 #include "ReplayParser.h"
 #include "Build.h"
 #include "Resources.h"
+#include "BuildComparator.h"
 
 StartScreen::StartScreen(QWidget *parent) :
     QMainWindow(parent),
@@ -16,9 +17,15 @@ StartScreen::StartScreen(QWidget *parent) :
     palette.setBrush(QPalette::Background, bkgnd);
     this->setPalette(palette);
 
-    ReplayParser parser;
-	ReplayParseResult result = parser.Parse(Resources::GetPath("Replays/TestReplay1.SC2Replay"));
 
+	///
+	/// The following is test code just to play around with replay loading and builds.  It will be deleted
+	///    when we have an actual application going but it convenient to keep here for the moment.
+	///
+    ReplayParser parser;
+
+	// Loads a replay and print both builds to the terminal.
+	ReplayParseResult result = parser.Parse(Resources::GetPath("Replays/Test1.SC2Replay"));
 	if (result.Succeeded()) {
 		std::pair<Build, Build> builds = Build::FromReplay(result.GetReplay());
 
@@ -37,6 +44,27 @@ StartScreen::StartScreen(QWidget *parent) :
 		delete result.GetReplay();
 	} else {
 		Log::Error("Failed to load the replay.  Reason: " + result.GetErrorDetails().toStdString());
+	}
+
+	// Load 2 replays, compare the first 151 seconds and print the result (should be 0 since the builds are the same up to that point).
+	ReplayParseResult result = parser.Parse(Resources::GetPath("Replays/TvZ211Test1.SC2Replay"));
+	ReplayParseResult result2 = parser.Parse(Resources::GetPath("Replays/TvZ211Test2.SC2Replay"));
+
+	if (result.Succeeded() && result2.Succeeded()) {
+		BuildComparator comparer;
+		BuildComparisonParams params;
+		params.CompareTimeS = 151;
+		comparer.SetBuildComparisonParams(params);
+
+		Build build1 = Build::FromReplay(result.GetReplay()).first;
+		Build build2 = Build::FromReplay(result2.GetReplay()).second;
+		BuildComparison comparison = comparer.Compare(build1, build2);
+		Log::Message(QString("Compare result: %1").arg(comparison.Result).toStdString());
+
+		delete result.GetReplay();
+		delete result2.GetReplay();
+	} else {
+		Log::Error(QString("Failed to load one of the replays. result = %1, result2 = %2").arg(result.GetErrorDetails()).arg(result2.GetErrorDetails()).toStdString());
 	}
 }
 

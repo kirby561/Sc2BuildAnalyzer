@@ -15,6 +15,8 @@ add_library(SbaCore STATIC
 				"Source/ReplayParser.cpp"
 				"Source/Build.h"
 				"Source/Build.cpp"
+				"Source/BuildComparator.h"
+				"Source/BuildComparator.cpp"
 				"Source/Utility/Log.h"
 				"Source/Utility/Log.cpp")
 

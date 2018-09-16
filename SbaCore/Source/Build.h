@@ -5,22 +5,19 @@
 
 class BuildEntry {
 public:
+	BuildEntry() {}
+
 	BuildEntry(Sc2Unit unit, double timestampSecs) {
 		Unit = unit;
 		TimestampSecs = timestampSecs;
 	}
 
 	Sc2Unit Unit;
-	double TimestampSecs;
+	double TimestampSecs = 0.0;
 };
 
 class Build {
 public:
-	Build(Sc2Replay* replay, int playerId) {
-		_replay = replay;
-		_playerId = playerId;
-	}
-
 	void AddEntry(BuildEntry entry);
 	const QList<BuildEntry>& GetOrder() { return _buildOrder; }
 
@@ -32,6 +29,11 @@ public:
 	static std::pair<Build, Build> FromReplay(Sc2Replay* replay);
 
 private:
+	Build(Sc2Replay* replay, int playerId) {
+		_replay = replay;
+		_playerId = playerId;
+	}
+
 	QList<BuildEntry> _buildOrder;
 	int _playerId = -1;
 	Sc2Replay* _replay = nullptr;

@@ -16,3 +16,5 @@ To setup the environment:
 	Note: The above is the location for Visual Studio 2017.  If you are generating for something else, pick the appropriate target instead of msvc2017_64.
 3) Generate
 4) Open the project and build/run
+5) (Optional) For debugging, the "Qt Visual Studio Tools" plugin is very helpful and can be installed within VS2017:
+	Tools-->Extensions-->Online-->Search "Qt"-->Install

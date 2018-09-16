@@ -147,7 +147,7 @@ public:
 	/**
 	 * This should be called before mapping names to units.  This initializes
 	 *    the table that does the mapping.
-	 */
+	 **/
 	static void InitUnitTable();
 
 	/**
