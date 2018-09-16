@@ -25,9 +25,9 @@ StartScreen::StartScreen(QWidget *parent) :
     ReplayParser parser;
 
 	// Loads a replay and print both builds to the terminal.
-	ReplayParseResult result = parser.Parse(Resources::GetPath("Replays/Test1.SC2Replay"));
-	if (result.Succeeded()) {
-		std::pair<Build, Build> builds = Build::FromReplay(result.GetReplay());
+	ReplayParseResult resultTest1 = parser.Parse(Resources::GetPath("Replays/Test1.SC2Replay"));
+	if (resultTest1.Succeeded()) {
+		std::pair<Build, Build> builds = Build::FromReplay(resultTest1.GetReplay());
 
 		Log::Message("Player 1s Build:");
 		const QList<BuildEntry>& order = builds.first.GetOrder();
@@ -41,9 +41,9 @@ StartScreen::StartScreen(QWidget *parent) :
 			Log::Message(QString("\t%1: %2").arg(entryItr->TimestampSecs).arg(entryItr->Unit.GetUnitName()).toStdString());
 		}
 
-		delete result.GetReplay();
+		delete resultTest1.GetReplay();
 	} else {
-		Log::Error("Failed to load the replay.  Reason: " + result.GetErrorDetails().toStdString());
+		Log::Error("Failed to load the replay.  Reason: " + resultTest1.GetErrorDetails().toStdString());
 	}
 
 	// Load 2 replays, compare the first 151 seconds and print the result (should be 0 since the builds are the same up to that point).
