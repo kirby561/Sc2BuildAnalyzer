@@ -7,8 +7,13 @@ add_executable(SbaUi
 				"Main.cpp"
 				"Resources.h"
 				"Resources.cpp"
-				"StartScreen.cpp"
+				"WindowManager.h"
+				"WindowManager.cpp"
 				"StartScreen.h"
-				"StartScreen.ui")
+				"StartScreen.cpp"
+				"StartScreen.ui"
+				"ProjectWindow.h"
+				"ProjectWindow.cpp"
+				"ProjectWindow.ui")
 
 target_link_libraries(SbaUi SbaCore Qt5::Core Qt5::Widgets)

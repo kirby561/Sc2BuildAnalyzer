@@ -1,7 +1,8 @@
-#include "startscreen.h"
+#include "StartScreen.h"
 #include <QApplication>
 #include "Resources.h"
 #include "ReplayData/Sc2Unit.h"
+#include "WindowManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,8 +12,8 @@ int main(int argc, char *argv[])
 	Resources::Init(QCoreApplication::applicationDirPath() + "/Resources/");
 	Sc2Unit::InitUnitTable();
 
-    StartScreen w;
-    w.show();
+	WindowManager manager;
+	manager.Start();
 
     return a.exec();
 }

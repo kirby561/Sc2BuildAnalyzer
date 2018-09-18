@@ -7,19 +7,25 @@ namespace Ui {
 class StartScreen;
 }
 
+class WindowManager;
+
 class StartScreen : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit StartScreen(QWidget *parent = 0);
-    ~StartScreen();
+    explicit StartScreen(WindowManager* manager, QWidget *parent = 0);
+    virtual ~StartScreen();
 
 private slots:
-    void on_pushButton_2_clicked();
+	void OnNewProjectButtonClicked();
+    void OnExitButtonClicked();
 
 private:
-    Ui::StartScreen *ui;
+    Ui::StartScreen* _ui;
+	WindowManager* _windowManager;
+
+	void ConnectSlots();
 
 };
 
