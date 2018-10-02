@@ -26,6 +26,7 @@ add_library(SbaCore STATIC
 				"Source/Utility/Property.h"
 				"Source/Utility/DataObject.h"
 				"Source/Utility/DataObject.cpp"
+				"Source/Utility/ArrayProperty.h"
 				"Source/Utility/UtilityTester.h"
 				"Source/Utility/UtilityTester.cpp")
 

@@ -28,6 +28,11 @@ public:
 		AddProperty("Int64Prop", &_int64Prop);
 		AddProperty("BooleanProp", &_booleanProp);
 		AddProperty("TestSubObject", &_subObject);
+		AddProperty<QVector<QStringProperty*>, QStringProperty>("QStrings", &_qstrings);
+
+		for (int i = 0; i < 10; i++) {
+			_qstrings.append(new QStringProperty("QStrings", QString("QString %1").arg(i)));
+		}
 	}
 
 	QString _qStringProp = "QStringValue";
@@ -37,6 +42,7 @@ public:
 	int64_t _int64Prop = INT64_MAX;
 	bool _booleanProp = false;
 	TestSubObject _subObject;
+	QVector<QStringProperty*> _qstrings;
 };
 
 bool UtilityTester::RunTests() {

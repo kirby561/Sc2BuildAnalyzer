@@ -19,6 +19,8 @@ QJsonObject DataObject::ToJson() {
 	for (int i = 0; i < _properties.length(); i++) {
 		if (_properties[i]->IsObject())
 			result[_properties[i]->GetKey()] = _properties[i]->ToJson();
+		else if (_properties[i]->IsArray())
+			result[_properties[i]->GetKey()] = _properties[i]->ToJsonArray();
 		else
 			result[_properties[i]->GetKey()] = _properties[i]->ToString();
 	}
@@ -51,8 +53,11 @@ bool DataObject::SetFromJson(QJsonObject json) {
 		Property* prop = *propItr;
 		QJsonValueRef jsonValueRef = json[prop->GetKey()];
 		if (prop->IsObject() && jsonValueRef.isObject()) {
-			DataObject* propObject = dynamic_cast<DataObject*>(prop);
-			if (!propObject->SetFromJson(jsonValueRef.toObject())) {
+			if (!prop->SetFromJson(jsonValueRef.toObject())) {
+				return false;
+			}
+		} else if (jsonValueRef.isArray()) {
+			if (!prop->SetFromArray(jsonValueRef.toArray())) {
 				return false;
 			}
 		} else if (jsonValueRef.isString()) {

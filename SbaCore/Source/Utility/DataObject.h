@@ -4,6 +4,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include "Property.h"
+#include "ArrayProperty.h"
 
 /**
  * Data Objects at a basic level are objects with properties.
@@ -17,14 +18,14 @@
  *          public:
  *              Int32Property Length = Int32Property("Length", 0);
  *				
- *              MyDataClass() : DataObject {
+ *              MyDataClass() : DataObject("MyDataClass") {
  *                  AddProperty(&Length);
  *              }
  *          };
  *    2) The Property class implementations are used implicitly:
  *			class MyDataClass : public DataObject {
  *          public:
- *              MyDataClass() : DataObject {
+ *              MyDataClass() : DataObject("MyDataClass") {
  *                  AddProperty("Length", &_length);
  *              }
  *
@@ -33,6 +34,13 @@
  *          };
  *
  *    In both cases above, the Length property will be part of the known properties for MyDataClass.
+ *    You can now do things like:
+ *			MyDataClass c1;
+ *          String jsonStringOfC1 = c1.ToString();
+ *    Which will output all know properties as a JSON string.  You can then load it back with:
+ *          MyDataClass c2;
+ *          c2.SetFrom(jsonStringOfC1);
+ *    Which will load back all the properties from c1 into c2.
  **/
 class DataObject : public Property {
 public:
@@ -54,6 +62,9 @@ public:
 	void AddProperty(QString key, float* prop) { AddProperty(new FloatProperty(key, prop), true); }
 	void AddProperty(QString key, double* prop) { AddProperty(new DoubleProperty(key, prop), true); }
 	void AddProperty(QString key, bool* prop) { AddProperty(new BooleanProperty(key, prop), true); }
+
+	template<typename IterableType, typename ArrayValueType>
+	void AddProperty(QString key, IterableType* prop) { AddProperty(new ArrayProperty<IterableType, ArrayValueType>(key, prop), true); }
 
 	void AddProperty(QString key, DataObject* prop) {
 		prop->SetKey(key);

@@ -3,6 +3,7 @@
 #include <QString>
 #include <QVector>
 #include <QJsonObject>
+#include <QJsonArray>
 
 // Forward declare
 class DataObject;
@@ -24,6 +25,19 @@ public:
 		return result;
 	}
 
+	virtual bool SetFromJson(QJsonObject value) {
+		if (value[GetKey()].isString()) {
+			SetFrom(value[GetKey()].toString());
+			return true;
+		}
+		return false;
+	}
+
+	// We are not an array but derived classes may be.
+	virtual QJsonArray ToJsonArray() { return QJsonArray();	}
+	virtual bool SetFromArray(QJsonArray jsonArray) { return false; }
+	virtual bool IsArray() { return false; }
+
 	// For Objects, GetValue will return the string JSON representation.
 	//    For values, it will return the value as a string.
 	virtual QString ToString() = 0;
@@ -31,6 +45,7 @@ public:
 
 	virtual DataObject* AsObject() { return nullptr; }
 	virtual bool IsObject() { return false; }
+	
 
 private:
 	QString _key;
