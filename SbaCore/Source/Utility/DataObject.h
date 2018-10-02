@@ -63,8 +63,10 @@ public:
 	void AddProperty(QString key, double* prop) { AddProperty(new DoubleProperty(key, prop), true); }
 	void AddProperty(QString key, bool* prop) { AddProperty(new BooleanProperty(key, prop), true); }
 
-	template<typename IterableType, typename ArrayValueType>
-	void AddProperty(QString key, IterableType* prop) { AddProperty(new ArrayProperty<IterableType, ArrayValueType>(key, prop), true); }
+	// This overload accepts any iterable (has IterableType::iterator) and
+	//    its values are pointers of something inheriting from Property.
+	template<template<typename> typename IterableType, typename ArrayValueType>
+	void AddProperty(QString key, IterableType<ArrayValueType*>* prop) { AddProperty(new ArrayProperty<IterableType<ArrayValueType*>, ArrayValueType>(key, prop), true); }
 
 	void AddProperty(QString key, DataObject* prop) {
 		prop->SetKey(key);

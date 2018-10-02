@@ -28,7 +28,7 @@ public:
 		AddProperty("Int64Prop", &_int64Prop);
 		AddProperty("BooleanProp", &_booleanProp);
 		AddProperty("TestSubObject", &_subObject);
-		AddProperty<QVector<QStringProperty*>, QStringProperty>("QStrings", &_qstrings);
+		AddProperty("QStringArray", &_qstrings);
 	}
 
 	QString _qStringProp = "QStringValue";
@@ -61,7 +61,7 @@ bool UtilityTester::TestDataObject() {
 	// Add a bunch of strings to obj1's array
 	int numStrings = 10;
 	for (int i = 0; i < numStrings; i++) {
-		obj1._qstrings.append(new QStringProperty("QStrings", QString("QString %1").arg(i)));
+		obj1._qstrings.append(new QStringProperty("QStringArray", QString("QString %1").arg(i)));
 	}
 
 	QString jsonString = obj1.ToString();

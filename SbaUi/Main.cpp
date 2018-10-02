@@ -6,6 +6,8 @@
 #include "UtilityTester.h"
 
 int main(int argc, char *argv[]) {
+	int result = 0;
+
 	// Quick test implementation to have somewhere to call them
 	//    This can be replaced with a more permanent test solution
 	if (argc == 2 && QString(argv[1]) == "Test") {
@@ -18,7 +20,7 @@ int main(int argc, char *argv[]) {
 			QString log = tester.GetLog();
 			Log::Error("One or more tests failed.  Log: ");
 			Log::Message(log.toStdString());
-			return -1;
+			result = -1;
 		}
 	} else {
 		QApplication a(argc, argv);
@@ -30,8 +32,8 @@ int main(int argc, char *argv[]) {
 		WindowManager manager;
 		manager.Start();
 
-		return a.exec();
+		result = a.exec();
 	}
 
-	return 0;
+	return result;
 }
