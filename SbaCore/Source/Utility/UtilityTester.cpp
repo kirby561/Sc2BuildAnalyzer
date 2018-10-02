@@ -29,10 +29,6 @@ public:
 		AddProperty("BooleanProp", &_booleanProp);
 		AddProperty("TestSubObject", &_subObject);
 		AddProperty<QVector<QStringProperty*>, QStringProperty>("QStrings", &_qstrings);
-
-		for (int i = 0; i < 10; i++) {
-			_qstrings.append(new QStringProperty("QStrings", QString("QString %1").arg(i)));
-		}
 	}
 
 	QString _qStringProp = "QStringValue";
@@ -61,6 +57,13 @@ bool UtilityTester::TestDataObject() {
 	//   and back, then compare them to make
 	//   sure all the values are correct.
 	TestObject obj1;
+	
+	// Add a bunch of strings to obj1's array
+	int numStrings = 10;
+	for (int i = 0; i < numStrings; i++) {
+		obj1._qstrings.append(new QStringProperty("QStrings", QString("QString %1").arg(i)));
+	}
+
 	QString jsonString = obj1.ToString();
 	if (jsonString.isEmpty()) {
 		result = false;
@@ -115,6 +118,22 @@ bool UtilityTester::TestDataObject() {
 	if (obj1._subObject._subProp2 != obj2._subObject._subProp2) {
 		result = false;
 		LOG("Sub object prop 2 was not the same");
+	}
+
+	// Compare all the strings in the array
+	if (obj2._qstrings.size() != numStrings) {
+		result = false;
+		LOG("Object did not have the right number of strings in the array.");
+	} else {
+		for (int i = 0; i < numStrings; i++) {
+			QString obj1String = obj1._qstrings[i]->Get();
+			QString obj2String = obj2._qstrings[i]->Get();
+			if (obj1String != obj2String) {
+				result = false;
+				LOG(QString("Object strings array at index %1 was not the same.  Obj1 had %2, Obj2 had %3.")
+								.arg(i).arg(obj1String).arg(obj2String));
+			}
+		}
 	}
 
 	return result;

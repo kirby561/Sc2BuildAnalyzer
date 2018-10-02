@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
 			QString log = tester.GetLog();
 			Log::Error("One or more tests failed.  Log: ");
 			Log::Message(log.toStdString());
+			return -1;
 		}
 	} else {
 		QApplication a(argc, argv);
@@ -31,4 +32,6 @@ int main(int argc, char *argv[]) {
 
 		return a.exec();
 	}
+
+	return 0;
 }
