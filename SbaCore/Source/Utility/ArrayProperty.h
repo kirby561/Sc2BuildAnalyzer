@@ -17,7 +17,6 @@ public:
 		// ?? TODO: Who owns the properties in the array?  I think the owner of this class needs to.
 	}
 
-	// We are not an array but derived classes may be.
 	virtual QJsonArray ToJsonArray() { 
 		QJsonArray result;
 
