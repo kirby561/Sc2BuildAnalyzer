@@ -2,8 +2,9 @@
 
 #include <QString>
 #include "ReplayData/ReplayData.h"
+#include "DataObject.h"
 
-class Filter {
+class Filter : public DataObject {
 public:
 	Filter(QString name);
 

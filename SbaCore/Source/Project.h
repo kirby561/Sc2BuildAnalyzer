@@ -4,8 +4,9 @@
 #include <QVector>
 #include "ReplayData/ReplayData.h"
 #include "Filter.h"
+#include "DataObject.h"
 
-class Project {
+class Project : public DataObject {
 public:
 	Project(QString name, QString directory);
 	virtual ~Project() {}
