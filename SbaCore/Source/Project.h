@@ -11,11 +11,20 @@ public:
 	Project(QString name, QString directory);
 	virtual ~Project() {}
 
+	QString GetPath();
+	QString GetReplayPath();
+	QString GetFilterPath();
+
+	bool AddReplays(QString path);
 	bool Save();
 	static Project* Load(QString file);
 
 private:
+	Project() : DataObject("Project") { AddProperties(); }
+	void AddProperties();
+
 	QString _name;
+	QString _rootFilterId;
 	QString _directory;
 
 	QVector<Sc2Replay*> _replays;

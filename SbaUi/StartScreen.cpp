@@ -6,6 +6,7 @@
 #include "BuildComparator.h"
 #include "ProjectWindow.h"
 #include "WindowManager.h"
+#include "Project.h"
 
 StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 		QMainWindow(parent),
