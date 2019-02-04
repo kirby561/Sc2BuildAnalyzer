@@ -28,6 +28,9 @@ add_library(SbaCore STATIC
 				"Source/Utility/DataObject.cpp"
 				"Source/Utility/ArrayProperty.h"
 				"Source/Utility/UtilityTester.h"
-				"Source/Utility/UtilityTester.cpp")
+				"Source/Utility/UtilityTester.cpp"
+				"Source/Utility/ProgressListener.h"
+				"Source/Utility/WorkQueueThread.h"
+				"Source/Utility/WorkQueueThread.cpp")
 
 target_link_libraries(SbaCore Qt5::Core)

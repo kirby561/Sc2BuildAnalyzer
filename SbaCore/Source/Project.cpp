@@ -1,12 +1,17 @@
 #include "Project.h"
 #include "QFile"
 #include "QDir"
+#include "QDirIterator"
+#include "QVector"
+#include "ProgressListener.h"
 
 Project::Project(QString name, QString directory) : DataObject("Project") {
 	_name = name;
 	_directory = directory;
 
 	AddProperties();
+
+	_thread.Start();
 }
 
 void Project::AddProperties() {
@@ -19,20 +24,60 @@ QString Project::GetPath() {
 }
 
 QString Project::GetReplayPath() {
-	return GetPath() + "/Replays";
+	return _directory + "/Replays";
 }
 
 QString Project::GetFilterPath() {
-	return GetPath() + "/Filters";
+	return _directory + "/Filters";
 }
 
 /**
  * Adds the replays from the given directory.
  * @param path The path to get the replays from.
- * @return Returns true if the replays were successfully imported for false if there was an error.
+ * @param listener Reports progress and indicates if the replays were successfully added or not.
  */
-bool Project::AddReplays(QString path) {
+void Project::AddReplays(QString path, ProgressListener* listener) {
+	QString replayPath = GetReplayPath();
+	_thread.AddWork([path, replayPath, listener] {
+		bool result = true;
 
+		// Build a list of the files to copy
+		QVector<QString> fileList;
+		QDirIterator dirIterator(path, QDirIterator::Subdirectories);
+		while (dirIterator.hasNext()) {
+			QFile file(dirIterator.next());
+			if (file.fileName().endsWith(".SC2Replay")) {
+				QString filePath = QFileInfo(file).absoluteFilePath();
+				fileList.append(filePath);
+			}
+		}
+
+		int maxProgress = fileList.size();
+		listener->OnProgressChanged(0, maxProgress);
+
+		QDir sourceDir = QDir(path);
+		for (int i = 0; i < fileList.size(); i++) {
+			// Get the path relative to the source directory
+			QString relativePath = sourceDir.relativeFilePath(fileList[i]);
+
+			// Move it into the replays path with the same subpath
+			QFile file(fileList[i]);
+			QString newPath = replayPath + "/" + relativePath;
+			QDir newDir = QFileInfo(newPath).absoluteDir();
+			newDir.mkdir(".");
+			if (!file.copy(newPath)) {
+				Log::Warn(QString("Failed to copy %1").arg(fileList[i]).toStdString());
+				result = false;
+			}
+
+			listener->OnProgressChanged(i + 1, maxProgress);
+		}
+
+		if (result)
+			listener->OnFinished(0);
+		else
+			listener->OnFinished(-1);
+	});
 }
 
 /**

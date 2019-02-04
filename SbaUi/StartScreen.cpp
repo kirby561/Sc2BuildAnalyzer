@@ -7,6 +7,30 @@
 #include "ProjectWindow.h"
 #include "WindowManager.h"
 #include "Project.h"
+#include "ProgressListener.h"
+#include <future>
+
+class ReplayAddListener : public ProgressListener {
+public:
+	ReplayAddListener() {
+		_result = _resultPromise.get_future();
+	}
+
+	virtual void OnProgressChanged(int progress, int max) {
+		Log::Message(QString("Progress: %1, Max: %2").arg(progress).arg(max).toStdString());
+	}
+
+	virtual void OnFinished(int result) {
+		Log::Message(QString("Finished with result %1").arg(result).toStdString());
+		_resultPromise.set_value(result);
+	}
+
+	int GetResult() { return _result.get(); }
+
+private:
+	std::promise<int> _resultPromise;
+	std::future<int> _result;
+};
 
 StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 		QMainWindow(parent),
@@ -73,6 +97,14 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 	} else {
 		Log::Error(QString("Failed to load one of the replays. result = %1, result2 = %2").arg(result.GetErrorDetails()).arg(result2.GetErrorDetails()).toStdString());
 	}
+
+	Project* project = new Project("TestProject", "E:/trash/TestProject");
+	project->Save();
+
+	ReplayAddListener* listener = new ReplayAddListener();
+	project->AddReplays("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer", listener);
+	Log::Message(QString("Result = %1").arg(listener->GetResult()).toStdString());
+	delete listener;	
 }
 
 void StartScreen::OnNewProjectButtonClicked() {
