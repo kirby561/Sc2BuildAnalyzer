@@ -77,7 +77,7 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 	// Load 2 replays, compare the first 151 seconds and print the result (should be 0 since the builds are the same up to that point).
 	ReplayParseResult result = parser.Parse(Resources::GetPath("Replays/TvZ211Test1.SC2Replay"));
 	ReplayParseResult result2 = parser.Parse(Resources::GetPath("Replays/TvZ211Test2.SC2Replay"));
-	ReplayParseResult result3 = parser.Parse(Resources::GetPath("Replays/TvZ211Test3.SC2Replay"));
+	ReplayParseResult result3 = parser.Parse(Resources::GetPath("Replays/TvZ211Test4.SC2Replay"));
 
 	if (result.Succeeded() && result2.Succeeded()) {
 		BuildComparator comparer;
@@ -98,6 +98,7 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 		Log::Error(QString("Failed to load one of the replays. result = %1, result2 = %2").arg(result.GetErrorDetails()).arg(result2.GetErrorDetails()).toStdString());
 	}
 
+	/*
 	Project* project = new Project("TestProject", "E:/trash/TestProject");
 	project->Save();
 
@@ -105,6 +106,7 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 	project->AddReplays("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer", listener);
 	Log::Message(QString("Result = %1").arg(listener->GetResult()).toStdString());
 	delete listener;	
+	*/
 }
 
 void StartScreen::OnNewProjectButtonClicked() {
