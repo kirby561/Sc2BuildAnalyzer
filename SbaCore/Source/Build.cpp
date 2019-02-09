@@ -20,6 +20,10 @@ std::pair<Build, Build> Build::FromReplay(Sc2Replay* replay) {
 				playerBuild = &player1Build;
 			else if (eventItr->ControlPlayerId == 2)
 				playerBuild = &player2Build;
+			else {
+				// For now, only support 2 players.
+				continue;
+			}
 
 			BuildEntry entry(unit, eventItr->GetTimestampSecs());
 			playerBuild->AddEntry(entry);

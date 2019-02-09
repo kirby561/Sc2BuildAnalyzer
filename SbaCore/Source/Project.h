@@ -18,6 +18,8 @@ public:
 	QString GetFilterPath();
 
 	void AddReplays(QString path, ProgressListener* listener);
+	void LoadReplays(ProgressListener* listener);
+	void ComputeReplayStats();
 	bool Save();
 	static Project* Load(QString file);
 

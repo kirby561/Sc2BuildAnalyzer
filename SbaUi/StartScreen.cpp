@@ -98,15 +98,22 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 		Log::Error(QString("Failed to load one of the replays. result = %1, result2 = %2").arg(result.GetErrorDetails()).arg(result2.GetErrorDetails()).toStdString());
 	}
 
-	/*
-	Project* project = new Project("TestProject", "E:/trash/TestProject");
-	project->Save();
+	Project* project = Project::Load("E:/trash/TestProject/TestProject.sba");
+	//project->Save();
 
 	ReplayAddListener* listener = new ReplayAddListener();
-	project->AddReplays("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer", listener);
-	Log::Message(QString("Result = %1").arg(listener->GetResult()).toStdString());
-	delete listener;	
-	*/
+	project->LoadReplays(listener);
+	Log::Message(QString("Finished.  Result = %1").arg(listener->GetResult()).toStdString());
+	delete listener;
+
+	project->ComputeReplayStats();
+
+	Log::Message("Done");
+
+	//ReplayAddListener* listener = new ReplayAddListener();
+	//project->AddReplays("C:/Users/Alex/Documents/StarCraft II/Accounts/50202609/1-S2-1-1986271/Replays/Multiplayer", listener);
+	//Log::Message(QString("Result = %1").arg(listener->GetResult()).toStdString());
+	//delete listener;	
 }
 
 void StartScreen::OnNewProjectButtonClicked() {

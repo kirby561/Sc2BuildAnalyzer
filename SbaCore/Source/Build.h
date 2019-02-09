@@ -18,8 +18,11 @@ public:
 
 class Build {
 public:
+	Build() {}
+
 	void AddEntry(BuildEntry entry);
 	const QList<BuildEntry>& GetOrder() { return _buildOrder; }
+	Sc2Replay* GetReplay() { return _replay; }
 
 	/**
 	 * Creates a pair of builds from the given replay.

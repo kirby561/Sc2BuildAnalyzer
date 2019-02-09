@@ -8,7 +8,7 @@
  **/
 class BuildComparisonParams {
 public:
-	double CompareTimeS = 360;				// Number of seconds to compare in the replay.  (AKA 60 means compare the first 60 seconds).
+	double CompareTimeS = 240;				// Number of seconds to compare in the replay.  (AKA 60 means compare the first 60 seconds).
 	double CompareTimeFudgeFactorS = 5;		// Number of seconds after the CompareTimeS to allow if one build is late (If for example you have a late starport but it's the same build and it falls just outside the compare window)
 };
 

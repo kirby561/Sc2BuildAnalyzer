@@ -4,6 +4,9 @@
 #include "QDirIterator"
 #include "QVector"
 #include "ProgressListener.h"
+#include "ReplayParser.h"
+#include "Build.h"
+#include "BuildComparator.h"
 
 Project::Project(QString name, QString directory) : DataObject("Project") {
 	_name = name;
@@ -78,6 +81,97 @@ void Project::AddReplays(QString path, ProgressListener* listener) {
 		else
 			listener->OnFinished(-1);
 	});
+}
+
+/**
+ * Loads and parses all the replays of this project into memory.
+ */
+void Project::LoadReplays(ProgressListener* listener) {
+	QString replayPath = GetReplayPath();
+	_thread.AddWork([this, replayPath, listener] {
+		// Clean up previous replays
+		for (int i = 0; i < _replays.size(); i++)
+			delete _replays[i];
+		_replays.clear();
+
+		bool result = true;
+
+		QDirIterator dirIterator(replayPath, QDirIterator::Subdirectories);
+		QVector<QString> fileList;
+		while (dirIterator.hasNext()) {
+			QFile file(dirIterator.next());
+			if (file.fileName().endsWith(".SC2Replay")) {
+				QString filePath = QFileInfo(file).absoluteFilePath();
+				fileList.append(filePath);
+			}
+		}
+
+		int maxProgress = fileList.size();
+		listener->OnProgressChanged(0, maxProgress);
+
+		ReplayParser parser;
+		for (int i = 0; i < fileList.size(); i++) {
+			QString path = fileList[i];
+
+			// Parse the replay
+			ReplayParseResult result = parser.Parse(path);
+			if (result.Succeeded()) {
+				_replays.append(result.GetReplay());
+			} else {
+				Log::Warn(QString("Could not parse replay %1 \n\tReason: %2").arg(path).arg(result.GetErrorDetails()).toStdString());
+			}
+
+			listener->OnProgressChanged(i + 1, maxProgress);
+		}
+
+		listener->OnFinished(0);
+	});
+}
+
+void Project::ComputeReplayStats() {
+	QVector<Build> builds;
+	for (int i = 0; i < _replays.size(); i++) {
+		std::pair<Build, Build> replayBuilds = Build::FromReplay(_replays[i]);
+		builds.append(replayBuilds.first);
+		builds.append(replayBuilds.second);
+	}
+
+	QVector<std::pair<Build, int>> knownBuilds;
+	QVector<int> editDistances;
+	BuildComparator comparator;
+	for (int i = 0; i < builds.size(); i++) {
+		bool foundBuild = false;
+		for (int y = 0; y < knownBuilds.size(); y++) {
+			BuildComparison comparison = comparator.Compare(knownBuilds[y].first, builds[i]);
+			editDistances.append(comparison.Result);
+
+			if (abs(comparison.Result) < 3.1f) {
+				knownBuilds[y].second++;
+				foundBuild = true;
+				break;
+			}
+		}
+
+		// If this is a new build, add it to the list
+		if (!foundBuild)
+			knownBuilds.append(std::make_pair(builds[i], 1));
+	}
+
+	QFile file("E:/trash/builds.txt");
+	file.open(QIODevice::WriteOnly);
+	char buff[1024];
+	for (int i = 0; i < knownBuilds.size(); i++) {
+		QString replayName = knownBuilds[i].first.GetReplay()->GetName();
+		int numOccurences = knownBuilds[i].second;
+		QString line = QString("%1, %2").arg(replayName).arg(numOccurences);
+		file.write(line.toUtf8().constData());
+		file.write("\n");
+	}
+
+	file.flush();
+	file.close();
+
+	Log::Message("Done");
 }
 
 /**

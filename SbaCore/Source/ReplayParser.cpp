@@ -30,7 +30,7 @@ ReplayParseResult ReplayParser::Parse(QString replayPath) {
 		return ReplayParseResult(QString("Failed to read the replay file.  Error code: ") + returnCode + QString(" Error = ") + output + "\n\n" + errors, false);
 	}
 
-	Sc2Replay* replayData = new Sc2Replay();
+	Sc2Replay* replayData = new Sc2Replay(replayPath);
 	QTextStream streamReader(&output);
 	while (!streamReader.atEnd()) {
 		QString nextObjectString = streamReader.readLine();
