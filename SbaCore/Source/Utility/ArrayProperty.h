@@ -39,7 +39,8 @@ public:
 
 		for (QJsonArray::iterator itr = jsonArray.begin(); itr != jsonArray.end(); itr++) {
 			QJsonValueRef value = *itr;
-			ArrayValueType* prop = new ArrayValueType(GetKey());
+			ArrayValueType* prop = new ArrayValueType();
+			prop->SetKey(GetKey());
 			if (value.isArray()) {
 				prop->SetFromArray(value.toArray());
 				_array->insert(_array->end(), prop);

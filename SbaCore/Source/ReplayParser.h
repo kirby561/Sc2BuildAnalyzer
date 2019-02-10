@@ -42,12 +42,15 @@ private:
  **/
 class ReplayParser {
 public:
-	ReplayParser();
+	ReplayParser() {};
+	ReplayParser(QString projectPath);
 	virtual ~ReplayParser();
 
 	ReplayParseResult Parse(QString replayPath);
 
 private:
+	QString _projectPath; // Optional project path.  If set, replays will be relative to this path.
+
 	int64_t GetInt64FromJson(QString key, QJsonObject obj);
 	QString GetStringFromJson(QString key, QJsonObject obj);
 };

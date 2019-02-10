@@ -1,4 +1,5 @@
 #include "DataObject.h"
+#include "Log.h"
 
 DataObject::DataObject(QString key) : Property(key) {
 	_properties.reserve(20);
@@ -6,9 +7,12 @@ DataObject::DataObject(QString key) : Property(key) {
 }
 
 DataObject::~DataObject() {
+	Log::Message(GetKey().toStdString());
 	for (int i = 0; i < _properties.length(); i++) {
-		if (_propertyOwnership[i])
-			delete _properties[i];
+		if (_propertyOwnership[i]) {
+			Property* prop = _properties[i];
+			delete prop;
+		}
 	}
 	_properties.clear();
 }

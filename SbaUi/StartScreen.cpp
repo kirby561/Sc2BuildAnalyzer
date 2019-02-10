@@ -55,18 +55,20 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 	// Loads a replay and print both builds to the terminal.
 	ReplayParseResult resultTest1 = parser.Parse(Resources::GetPath("Replays/Test1.SC2Replay"));
 	if (resultTest1.Succeeded()) {
-		std::pair<Build, Build> builds = Build::FromReplay(resultTest1.GetReplay());
+		std::pair<Build*, Build*> builds = Build::FromReplay(resultTest1.GetReplay());
 
 		Log::Message("Player 1s Build:");
-		const QList<BuildEntry>& order = builds.first.GetOrder();
+		const QList<BuildEntry*>& order = builds.first->GetOrder();
 		for (auto entryItr = order.begin(); entryItr != order.end(); entryItr++) {
-			Log::Message(QString("\t%1: %2").arg(entryItr->TimestampSecs).arg(entryItr->Unit.GetUnitName()).toStdString());
+			BuildEntry* entry = *entryItr;
+			Log::Message(QString("\t%1: %2").arg(entry->TimestampSecs).arg(entry->Unit->GetUnitName()).toStdString());
 		}
 
 		Log::Message("Player 2s Build:");
-		const QList<BuildEntry>& order2 = builds.second.GetOrder();
+		const QList<BuildEntry*>& order2 = builds.second->GetOrder();
 		for (auto entryItr = order2.begin(); entryItr != order2.end(); entryItr++) {
-			Log::Message(QString("\t%1: %2").arg(entryItr->TimestampSecs).arg(entryItr->Unit.GetUnitName()).toStdString());
+			BuildEntry* entry = *entryItr;
+			Log::Message(QString("\t%1: %2").arg(entry->TimestampSecs).arg(entry->Unit->GetUnitName()).toStdString());
 		}
 
 		delete resultTest1.GetReplay();
@@ -82,9 +84,9 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 	if (result.Succeeded() && result2.Succeeded()) {
 		BuildComparator comparer;
 
-		Build build1 = Build::FromReplay(result.GetReplay()).first;
-		Build build2 = Build::FromReplay(result2.GetReplay()).second;
-		Build build3 = Build::FromReplay(result2.GetReplay()).second;
+		Build* build1 = Build::FromReplay(result.GetReplay()).first;
+		Build* build2 = Build::FromReplay(result2.GetReplay()).second;
+		Build* build3 = Build::FromReplay(result2.GetReplay()).second;
 		BuildComparison comparison = comparer.Compare(build1, build2);
 		Log::Message(QString("Compare result: %1").arg(comparison.Result).toStdString());
 		

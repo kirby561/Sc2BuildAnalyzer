@@ -8,17 +8,23 @@
 #include <QTextStream>
 #include "ReplayData/ReplayData.h"
 
-ReplayParser::ReplayParser() {
+ReplayParser::ReplayParser(QString projectPath) {
+	_projectPath = projectPath;
 }
 
 ReplayParser::~ReplayParser() {
 }
 
 ReplayParseResult ReplayParser::Parse(QString replayPath) {
+	// Add the project path if required
+	QString fullReplayPath = replayPath;
+	if (!_projectPath.isEmpty())
+		fullReplayPath = _projectPath + "/" + replayPath;
+
 	QProcess parsingProcess;
 	QString program(QCoreApplication::applicationDirPath() + "/SbaPythonReader.exe");
 	QStringList arguments;
-	arguments.append(replayPath);
+	arguments.append(fullReplayPath);
 	arguments.append("--trackerevents"); // ?? TODO: Provide different options for what data to get or get all of it
 	arguments.append("--ndjson");
 	parsingProcess.start(program, arguments);
@@ -49,26 +55,26 @@ ReplayParseResult ReplayParser::Parse(QString replayPath) {
 			if (!eventType.isUndefined()) {
 				Sc2EventId::Sc2EventIds eventId = (Sc2EventId::Sc2EventIds)eventType.toInt();
 				if (eventId == Sc2EventId::SUnitBornEvent || eventId == Sc2EventId::SUnitInitEvent) {
-					Sc2UnitEvent event(eventId);
+					Sc2UnitEvent* event = new Sc2UnitEvent(eventId);
 
-					event.UnitTagIndex = GetInt64FromJson("m_unitTagIndex", obj);
-					event.ControlPlayerId = GetInt64FromJson("m_controlPlayerId", obj);
-					event.GameLoop = GetInt64FromJson("_gameloop", obj);
-					event.Y = GetInt64FromJson("m_y", obj);
-					event.X = GetInt64FromJson("m_x", obj);
-					event.Bits = GetInt64FromJson("_bits", obj);
-					event.UpkeepPlayerId = GetInt64FromJson("m_upkeepPlayerId", obj);
-					event.UnitTypeName = GetStringFromJson("m_unitTypeName", obj);
+					event->UnitTagIndex = GetInt64FromJson("m_unitTagIndex", obj);
+					event->ControlPlayerId = GetInt64FromJson("m_controlPlayerId", obj);
+					event->GameLoop = GetInt64FromJson("_gameloop", obj);
+					event->Y = GetInt64FromJson("m_y", obj);
+					event->X = GetInt64FromJson("m_x", obj);
+					event->Bits = GetInt64FromJson("_bits", obj);
+					event->UpkeepPlayerId = GetInt64FromJson("m_upkeepPlayerId", obj);
+					event->UnitTypeName = GetStringFromJson("m_unitTypeName", obj);
 
 					replayData->AddEvent(event);
 				} else if (eventId == Sc2EventId::SPlayerSetupEvent) {
-					Sc2Player player;
-					player.PlayerId = GetInt64FromJson("m_playerId", obj);
-					player.Type = GetInt64FromJson("m_type", obj);
-					player.GameLoop = GetInt64FromJson("_gameloop", obj);
-					player.Bits = GetInt64FromJson("_bits", obj);
-					player.UserId = GetInt64FromJson("m_userId", obj);
-					player.SlotId = GetInt64FromJson("m_slotId", obj);
+					Sc2Player* player = new Sc2Player();
+					player->PlayerId = GetInt64FromJson("m_playerId", obj);
+					player->Type = GetInt64FromJson("m_type", obj);
+					player->GameLoop = GetInt64FromJson("_gameloop", obj);
+					player->Bits = GetInt64FromJson("_bits", obj);
+					player->UserId = GetInt64FromJson("m_userId", obj);
+					player->SlotId = GetInt64FromJson("m_slotId", obj);
 
 					replayData->AddPlayer(player);
 				}

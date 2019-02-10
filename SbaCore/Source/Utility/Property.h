@@ -5,8 +5,23 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+// Helper macro for creating the constructors of each property type
+#define PROPERTY_CONSTRUCTORS(NAME, TYPE) \
+public: \
+NAME##Property(QString key) : PropertyImplBase(key) {} \
+NAME##Property(QString key, TYPE initialValue) : PropertyImplBase(key, initialValue) {} \
+NAME##Property(QString key, TYPE* prop) : PropertyImplBase(key, prop) {} \
+ \
+protected: \
+	template <typename IterableType, typename ArrayValueType> \
+	friend class ArrayProperty; \
+	NAME##Property() {} \
+
+
 // Forward declare
 class DataObject;
+template <typename IterableType, typename ArrayValueType>
+class ArrayProperty;
 
 class Property {
 public:
@@ -47,7 +62,16 @@ public:
 	virtual bool IsObject() { return false; }
 	
 
-private:
+protected:
+	// DataObjects and ArrayProperties need access to 
+	//    the default constructor.  Otherwise we need
+	//    to require DataObjects to have a QString key constructor
+	//    which sometimes conflicts with other uses of a QString constructor.
+	friend class DataObject;
+	template <typename IterableType, typename ArrayValueType>
+	friend class ArrayProperty;
+	Property() {}
+
 	QString _key;
 };
 
@@ -91,14 +115,15 @@ public:
 protected:
 	T* _value = nullptr;
 	bool _ownsValue = false;
+
+	PropertyImplBase() {
+		_value = new T();
+		_ownsValue = true;
+	}
 };
 
 class QStringProperty : public PropertyImplBase<QString> {
 public:
-	QStringProperty(QString key) : PropertyImplBase(key) {}
-	QStringProperty(QString key, QString initialValue) : PropertyImplBase(key, initialValue) {}
-	QStringProperty(QString key, QString* prop) : PropertyImplBase(key, prop) {}
-
 	virtual QString ToString() { 
 		return *_value; 
 	}
@@ -107,14 +132,12 @@ public:
 		*_value = value;
 		return true;
 	}
+
+	PROPERTY_CONSTRUCTORS(QString, QString)
 };
 
 class Int32Property : public PropertyImplBase<int32_t> {
 public:
-	Int32Property(QString key) : PropertyImplBase(key) {}
-	Int32Property(QString key, int32_t initialValue) : PropertyImplBase(key, initialValue) {}
-	Int32Property(QString key, int32_t* prop) : PropertyImplBase(key, prop) {}
-
 	virtual QString ToString() {
 		return QString::number(*_value);
 	}
@@ -129,14 +152,32 @@ public:
 
 		return result;
 	}
+
+	PROPERTY_CONSTRUCTORS(Int32, int32_t)
+};
+
+class UInt32Property : public PropertyImplBase<uint32_t> {
+public:
+	virtual QString ToString() {
+		return QString::number(*_value);
+	}
+
+	virtual bool SetFrom(QString value) {
+		bool result;
+		uint32_t newValue = value.toUInt(&result, 10);
+
+		// Only update the value if the parsing was successful
+		if (result)
+			*_value = newValue;
+
+		return result;
+	}
+
+	PROPERTY_CONSTRUCTORS(UInt32, uint32_t)
 };
 
 class Int64Property : public PropertyImplBase<int64_t> {
 public:
-	Int64Property(QString key) : PropertyImplBase(key) {}
-	Int64Property(QString key, int64_t initialValue) : PropertyImplBase(key, initialValue) {}
-	Int64Property(QString key, int64_t* prop) : PropertyImplBase(key, prop) {}
-
 	virtual QString ToString() {
 		return QString::number(*_value);
 	}
@@ -152,14 +193,33 @@ public:
 
 		return result;
 	}
+
+	PROPERTY_CONSTRUCTORS(Int64, int64_t)
+};
+
+class UInt64Property : public PropertyImplBase<uint64_t> {
+public:
+	virtual QString ToString() {
+		return QString::number(*_value);
+	}
+
+	virtual bool SetFrom(QString value) {
+		// Note: qulonglong is always 64 bit in QT
+		bool result;
+		uint64_t newValue = value.toULongLong(&result, 10);
+
+		// Only update the value if the parsing was successful
+		if (result)
+			*_value = newValue;
+
+		return result;
+	}
+
+	PROPERTY_CONSTRUCTORS(UInt64, uint64_t)
 };
 
 class FloatProperty : public PropertyImplBase<float> {
 public:
-	FloatProperty(QString key) : PropertyImplBase(key) {}
-	FloatProperty(QString key, float initialValue) : PropertyImplBase(key, initialValue) {}
-	FloatProperty(QString key, float* prop) : PropertyImplBase(key, prop) {}
-
 	virtual QString ToString() {
 		// The 2000 is the number of significant digits to allow
 		//   Theoretically the max a double can have is 1074
@@ -176,14 +236,12 @@ public:
 
 		return result;
 	}
+
+	PROPERTY_CONSTRUCTORS(Float, float)
 };
 
 class DoubleProperty : public PropertyImplBase<double> {
 public:
-	DoubleProperty(QString key) : PropertyImplBase(key) {}
-	DoubleProperty(QString key, double initialValue) : PropertyImplBase(key, initialValue) {}
-	DoubleProperty(QString key, double* prop) : PropertyImplBase(key, prop) {}
-
 	virtual QString ToString() {
 		// The 2000 is the number of significant digits to allow
 		//   Theoretically the max a double can have is 1074
@@ -200,14 +258,12 @@ public:
 
 		return result;
 	}
+
+	PROPERTY_CONSTRUCTORS(Double, double)
 };
 
 class BooleanProperty : public PropertyImplBase<bool> {
 public:
-	BooleanProperty(QString key) : PropertyImplBase(key) {}
-	BooleanProperty(QString key, bool initialValue) : PropertyImplBase(key, initialValue) {}
-	BooleanProperty(QString key, bool* prop) : PropertyImplBase(key, prop) {}
-
 	virtual QString ToString() {
 		if (*_value)
 			return QString("1");
@@ -225,4 +281,6 @@ public:
 
 		return false;			
 	}
+
+	PROPERTY_CONSTRUCTORS(Boolean, bool)
 };

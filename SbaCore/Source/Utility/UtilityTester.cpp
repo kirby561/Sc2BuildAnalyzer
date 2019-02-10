@@ -6,10 +6,16 @@
 
 class TestSubObject : public DataObject {
 public:
+	TestSubObject() : DataObject("TestSubObject") { AddProperties(); }
+
 	TestSubObject(QString key) : DataObject(key) {
 		_subProp1 = "SubProp1Value";
 		_subProp2 = "SubProp2Value";
 
+		AddProperties();
+	}
+
+	void AddProperties() {
 		AddProperty("SubProp1", &_subProp1);
 		AddProperty("SubProp2", &_subProp2);
 	}
@@ -20,7 +26,13 @@ public:
 
 class TestObject : public DataObject {
 public:
+	TestObject() : DataObject("TestObject") { AddProperties(); }
+
 	TestObject(QString key) : DataObject(key) {
+		AddProperties();
+	}
+
+	void AddProperties() {
 		AddProperty("QStringProp", &_qStringProp);
 		AddProperty("DoubleProp", &_doubleProp);
 		AddProperty("FloatProp", &_floatProp);

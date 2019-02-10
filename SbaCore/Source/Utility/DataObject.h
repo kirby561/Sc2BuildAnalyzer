@@ -44,6 +44,7 @@
  **/
 class DataObject : public Property {
 public:
+	DataObject() {}
 	DataObject(QString key);
 	virtual ~DataObject();
 
@@ -58,7 +59,9 @@ public:
 	// Specific types of properties
 	void AddProperty(QString key, QString* prop) { AddProperty(new QStringProperty(key, prop), true); }
 	void AddProperty(QString key, int32_t* prop) { AddProperty(new Int32Property(key, prop), true); }
+	void AddProperty(QString key, uint32_t* prop) { AddProperty(new UInt32Property(key, prop), true); }
 	void AddProperty(QString key, int64_t* prop) { AddProperty(new Int64Property(key, prop), true); }
+	void AddProperty(QString key, uint64_t* prop) { AddProperty(new UInt64Property(key, prop), true); }
 	void AddProperty(QString key, float* prop) { AddProperty(new FloatProperty(key, prop), true); }
 	void AddProperty(QString key, double* prop) { AddProperty(new DoubleProperty(key, prop), true); }
 	void AddProperty(QString key, bool* prop) { AddProperty(new BooleanProperty(key, prop), true); }

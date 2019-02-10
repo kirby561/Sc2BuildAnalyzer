@@ -3,10 +3,11 @@
 #include <QString>
 #include <QHash>
 #include "Log.h"
+#include "DataObject.h"
 
-class Sc2Unit {
+class Sc2Unit : public DataObject {
 public:
-	enum UnitId {
+	enum UnitId : uint32_t {
 		// Terran Units
 		Scv,
 		Marine,
@@ -155,7 +156,7 @@ public:
 	 * @param unitName The name of the unit to find.
 	 * @returns Returns the created unit or Units[Invalid] if the name did not match a known unit.
 	 **/
-	static Sc2Unit CreateUnitByName(QString unitName);
+	static Sc2Unit* CreateUnitByName(QString unitName);
 
 private:
 	UnitId _unitId;
@@ -167,8 +168,21 @@ private:
 	bool _isBuilding;
 
 	// A mapping of Unit Name to Sc2Unit
-	static QHash<QString, Sc2Unit> _unitMap;
+	static QHash<QString, Sc2Unit*> _unitMap;
 	
 	// An array of all the units
-	const static Sc2Unit Units[];
+	static Sc2Unit* Units[];
+
+	void AddProperties() {
+		AddProperty("UnitId", (uint32_t*)&_unitId);
+		AddProperty("UnitName", &_unitName);
+		AddProperty("BuildTimeSecs", &_buildTimeSecs);
+		AddProperty("MineralCost", &_mineralCost);
+		AddProperty("GasCost", &_gasCost);
+		AddProperty("SupplyCost", &_supplyCost);
+		AddProperty("IsBuilding", &_isBuilding);
+	}
+
+	// Don't allow copy constructor
+	Sc2Unit(const Sc2Unit& other) {}
 };

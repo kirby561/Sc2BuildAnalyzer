@@ -32,7 +32,7 @@ public:
 	 *			This number is based off the edit distance between the 2 builds given.  A lower number indicates the builds are more similar.  
 	 *			A larger number indicates they are further away.
 	 **/
-	BuildComparison Compare(Build build1, Build build2);
+	BuildComparison Compare(Build* build1, Build* build2);
 
 	/**
 	 * Sets the parameters to use when comparing builds.  This must be set prior to calling Compare.
@@ -49,7 +49,7 @@ private:
 	 * @param timeS The last time to include in seconds.
 	 * @return Returns the modified list.
 	 **/
-	QVector<BuildEntry> TrimBuild(const QList<BuildEntry>& build, double timeS);
+	QVector<BuildEntry*> TrimBuild(const QList<BuildEntry*>& build, double timeS);
 
 	/**
 	 * Returns the minimum of the 3 given numbers.

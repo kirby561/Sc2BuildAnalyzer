@@ -2,13 +2,13 @@
 #include <algorithm>
 
 // ?? Untested
-BuildComparison BuildComparator::Compare(Build build1, Build build2) {
-	const QList<BuildEntry>& build1Order = build1.GetOrder();
-	const QList<BuildEntry>& build2Order = build2.GetOrder();
+BuildComparison BuildComparator::Compare(Build* build1, Build* build2) {
+	const QList<BuildEntry*>& build1Order = build1->GetOrder();
+	const QList<BuildEntry*>& build2Order = build2->GetOrder();
 
 	// First thing is to trim each build by the compare time
-	QVector<BuildEntry> build1Trimmed = TrimBuild(build1Order, _params.CompareTimeS);
-	QVector<BuildEntry> build2Trimmed = TrimBuild(build2Order, _params.CompareTimeS);
+	QVector<BuildEntry*> build1Trimmed = TrimBuild(build1Order, _params.CompareTimeS);
+	QVector<BuildEntry*> build2Trimmed = TrimBuild(build2Order, _params.CompareTimeS);
 
 	// ?? TODO: Encorporate the fudge factor here
 
@@ -23,7 +23,7 @@ BuildComparison BuildComparator::Compare(Build build1, Build build2) {
 				distances[i + j * width] = j;
 			} else if (j == 0) {
 				distances[i + j * width] = i;
-			} else if (build1Trimmed.at(i - 1).Unit.GetUnitId() == build2Trimmed.at(j - 1).Unit.GetUnitId()) {
+			} else if (build1Trimmed.at(i - 1)->Unit->GetUnitId() == build2Trimmed.at(j - 1)->Unit->GetUnitId()) {
 				distances[i + j * width] = distances[(i - 1) + width * (j - 1)];
 			} else {
 				distances[i + j * width] = 1.0f + Min(distances[i + width * (j - 1)], distances[(i - 1) + width * j], distances[(i - 1) + width * (j - 1)]);
@@ -37,11 +37,11 @@ BuildComparison BuildComparator::Compare(Build build1, Build build2) {
 	return comparison;
 }
 
-QVector<BuildEntry> BuildComparator::TrimBuild(const QList<BuildEntry>& build, double timeS) {
-	QVector<BuildEntry> result;
+QVector<BuildEntry*> BuildComparator::TrimBuild(const QList<BuildEntry*>& build, double timeS) {
+	QVector<BuildEntry*> result;
 	
 	for (int i = 0; i < build.size(); i++) {
-		if (build[i].TimestampSecs <= timeS) {
+		if (build[i]->TimestampSecs <= timeS) {
 			result.append(build[i]);
 		} else {
 			break;

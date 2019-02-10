@@ -109,9 +109,10 @@ void Project::LoadReplays(ProgressListener* listener) {
 		int maxProgress = fileList.size();
 		listener->OnProgressChanged(0, maxProgress);
 
-		ReplayParser parser;
+		ReplayParser parser(_directory);
+		QDir replayDir(_directory);
 		for (int i = 0; i < fileList.size(); i++) {
-			QString path = fileList[i];
+			QString path = replayDir.relativeFilePath(fileList[i]);
 
 			// Parse the replay
 			ReplayParseResult result = parser.Parse(path);
@@ -129,14 +130,14 @@ void Project::LoadReplays(ProgressListener* listener) {
 }
 
 void Project::ComputeReplayStats() {
-	QVector<Build> builds;
+	QVector<Build*> builds;
 	for (int i = 0; i < _replays.size(); i++) {
-		std::pair<Build, Build> replayBuilds = Build::FromReplay(_replays[i]);
+		std::pair<Build*, Build*> replayBuilds = Build::FromReplay(_replays[i]);
 		builds.append(replayBuilds.first);
 		builds.append(replayBuilds.second);
 	}
 
-	QVector<std::pair<Build, int>> knownBuilds;
+	QVector<std::pair<Build*, int>> knownBuilds;
 	QVector<int> editDistances;
 	BuildComparator comparator;
 	for (int i = 0; i < builds.size(); i++) {
@@ -159,9 +160,8 @@ void Project::ComputeReplayStats() {
 
 	QFile file("E:/trash/builds.txt");
 	file.open(QIODevice::WriteOnly);
-	char buff[1024];
 	for (int i = 0; i < knownBuilds.size(); i++) {
-		QString replayName = knownBuilds[i].first.GetReplay()->GetName();
+		QString replayName = knownBuilds[i].first->GetReplay()->GetName();
 		int numOccurences = knownBuilds[i].second;
 		QString line = QString("%1, %2").arg(replayName).arg(numOccurences);
 		file.write(line.toUtf8().constData());
