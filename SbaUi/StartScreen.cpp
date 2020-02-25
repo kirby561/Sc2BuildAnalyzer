@@ -32,6 +32,13 @@ private:
 	std::future<int> _result;
 };
 
+void WriteDataObjectToFile(DataObject* obj, QString fileName) {
+	QFile file(fileName);
+	file.open(QIODevice::WriteOnly);
+	file.write(obj->ToString().toUtf8());
+	file.close();
+}
+
 StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 		QMainWindow(parent),
 		_windowManager(manager),
@@ -56,6 +63,10 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 	ReplayParseResult resultTest1 = parser.Parse(Resources::GetPath("Replays/Test1.SC2Replay"));
 	if (resultTest1.Succeeded()) {
 		std::pair<Build*, Build*> builds = Build::FromReplay(resultTest1.GetReplay());
+
+		WriteDataObjectToFile(resultTest1.GetReplay(), "E:/trash/ReplayTest.json");
+		WriteDataObjectToFile(builds.first, "E:/trash/BuildTest1.json");
+		WriteDataObjectToFile(builds.second, "E:/trash/BuildTest2.json");
 
 		Log::Message("Player 1s Build:");
 		const QList<BuildEntry*>& order = builds.first->GetOrder();
@@ -100,7 +111,7 @@ StartScreen::StartScreen(WindowManager* manager, QWidget *parent) :
 		Log::Error(QString("Failed to load one of the replays. result = %1, result2 = %2").arg(result.GetErrorDetails()).arg(result2.GetErrorDetails()).toStdString());
 	}
 
-	Project* project = Project::Load("E:/trash/TestProject/TestProject.sba");
+	Project* project = Project::Load("E:/trash/TestProject3/TestProject3.sba");
 	//project->Save();
 
 	ReplayAddListener* listener = new ReplayAddListener();

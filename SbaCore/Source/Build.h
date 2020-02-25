@@ -32,7 +32,7 @@ protected:
 	}
 };
 
-class Build : DataObject {
+class Build : public DataObject {
 public:
 	Build() { AddProperties(); }
 	~Build();

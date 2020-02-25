@@ -129,6 +129,7 @@ void Project::LoadReplays(ProgressListener* listener) {
 	});
 }
 
+// ?? Temp test method
 void Project::ComputeReplayStats() {
 	QVector<Build*> builds;
 	for (int i = 0; i < _replays.size(); i++) {
@@ -137,33 +138,45 @@ void Project::ComputeReplayStats() {
 		builds.append(replayBuilds.second);
 	}
 
-	QVector<std::pair<Build*, int>> knownBuilds;
+	QVector<QVector<Build*>> knownBuilds;
 	QVector<int> editDistances;
 	BuildComparator comparator;
 	for (int i = 0; i < builds.size(); i++) {
 		bool foundBuild = false;
 		for (int y = 0; y < knownBuilds.size(); y++) {
-			BuildComparison comparison = comparator.Compare(knownBuilds[y].first, builds[i]);
+			BuildComparison comparison = comparator.Compare(knownBuilds[y][0], builds[i]);
 			editDistances.append(comparison.Result);
 
-			if (abs(comparison.Result) < 3.1f) {
-				knownBuilds[y].second++;
+			if (abs(comparison.Result) < 1.1f) {
+				knownBuilds[y].append(builds[i]);
 				foundBuild = true;
 				break;
 			}
 		}
 
 		// If this is a new build, add it to the list
-		if (!foundBuild)
-			knownBuilds.append(std::make_pair(builds[i], 1));
+		if (!foundBuild) {
+			QVector<Build*> known;
+			known.append(builds[i]);
+			knownBuilds.append(known);
+		}
 	}
+
+	// Sort by occurences
+	qSort(knownBuilds.begin(), knownBuilds.end(), [] (const QVector<Build*>& build1, const QVector<Build*>& build2) {
+		return build1.size() < build2.size();
+	});
 
 	QFile file("E:/trash/builds.txt");
 	file.open(QIODevice::WriteOnly);
 	for (int i = 0; i < knownBuilds.size(); i++) {
-		QString replayName = knownBuilds[i].first->GetReplay()->GetName();
-		int numOccurences = knownBuilds[i].second;
-		QString line = QString("%1, %2").arg(replayName).arg(numOccurences);
+		QString replays = "";
+		for (int y = 0; y < knownBuilds[i].size(); y++) {
+			replays += knownBuilds[i][y]->GetReplay()->GetName() + ", ";
+		}
+		int numOccurences = knownBuilds[i].size();
+
+		QString line = QString("%1, %2, %3").arg(numOccurences).arg(knownBuilds[i][0]->GetOrder()[0]->Unit->GetUnitName()).arg(replays);
 		file.write(line.toUtf8().constData());
 		file.write("\n");
 	}
@@ -172,6 +185,46 @@ void Project::ComputeReplayStats() {
 	file.close();
 
 	Log::Message("Done");
+}
+
+void Project::PrintReplaysWithUnitByTime(Sc2Unit::UnitId unitId, double gameTime) {
+	for (int i = 0; i < _replays.size(); i++) {
+		Sc2Replay* replay = _replays[i];
+		const QVector<Sc2UnitEvent*>* events = replay->GetEvents();
+
+		double lairTiming = -1;
+		double spireTiming = -1;
+		double firstMutaTiming = -1;
+		double numberOfGases = -1;
+		double numberOfDrones = -1;
+		for (QVector<Sc2UnitEvent*>::const_iterator itr = events->begin(); itr != events->end(); itr++) {
+			Sc2UnitEvent* unitEvent = *itr;
+
+			Sc2Unit* unit = Sc2Unit::CreateUnitByName(unitEvent->UnitTypeName);
+			if (unit->IsValid()) {
+				if (unitEvent->GetStartTime() <= gameTime) {
+					if (unit->GetUnitId() == Sc2Unit::Mutalisk) {
+						firstMutaTiming = unitEvent->GetStartTime();
+						break;
+					} else if (unit->GetUnitId() == Sc2Unit::Drone) {
+						if (unitEvent->EventId == Sc2EventId::SUnitBornEvent)
+							numberOfDrones++;
+						else if (unitEvent->EventId == Sc2EventId::SUnitDiedEvent)
+							numberOfDrones--; // ?? TODO: UnitDiedEvents dont have the name, just the ID so we need to find the unit.
+					} else if (unit->GetUnitId() == Sc2Unit::Lair && lairTiming == -1) {
+						lairTiming = unitEvent->GetStartTime();
+					} else if (unit->GetUnitId() == Sc2Unit::Spire && spireTiming == -1) {
+						spireTiming = unitEvent->GetStartTime();
+					} else if (unit->GetUnitId() == Sc2Unit::Drone) {
+
+					}
+				} else {
+					// We're done
+					break;
+				}
+			}
+		}
+	}
 }
 
 /**

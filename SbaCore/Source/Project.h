@@ -19,9 +19,12 @@ public:
 
 	void AddReplays(QString path, ProgressListener* listener);
 	void LoadReplays(ProgressListener* listener);
-	void ComputeReplayStats();
 	bool Save();
 	static Project* Load(QString file);
+
+	// Temp methods for testing
+	void ComputeReplayStats();
+	void PrintReplaysWithUnitByTime(Sc2Unit::UnitId unit, double gameTime);
 
 private:
 	Project() : DataObject("Project") { AddProperties(); }

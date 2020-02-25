@@ -7,7 +7,6 @@ DataObject::DataObject(QString key) : Property(key) {
 }
 
 DataObject::~DataObject() {
-	Log::Message(GetKey().toStdString());
 	for (int i = 0; i < _properties.length(); i++) {
 		if (_propertyOwnership[i]) {
 			Property* prop = _properties[i];

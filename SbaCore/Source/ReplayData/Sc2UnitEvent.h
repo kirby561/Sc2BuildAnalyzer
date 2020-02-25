@@ -4,6 +4,8 @@
 #include <QString>
 #include "DataObject.h"
 
+class Sc2Unit;
+
 class Sc2UnitEvent : public DataObject {
 public:
 	Sc2UnitEvent() : DataObject() { AddProperties(); }
@@ -14,7 +16,10 @@ public:
 		AddProperties();
 	}
 
-	double GetTimestampSecs() const { return GameLoop / GameLoopsPerSecond; }
+	// Helper methods
+	double GetTimestampSecs() const; // Gets the game time in seconds.
+	double GetStartTime() const; // Gets the time a unit, structure or upgrade started.
+	bool IsUpgrade() const;	// Returns true if it's an upgrade.
 
 	QString Event;
 	Sc2EventId::Sc2EventIds EventId;
@@ -30,16 +35,5 @@ public:
 	QString UnitTypeName;
 
 private:
-	void AddProperties() {
-		AddProperty("Event", &Event);
-		AddProperty("UnitTagIndex", &UnitTagIndex);
-		AddProperty("UnitTagRecycle", &UnitTagRecycle);
-		AddProperty("ControlPlayerId", &ControlPlayerId);
-		AddProperty("GameLoop", &GameLoop);
-		AddProperty("Y", &Y);
-		AddProperty("X", &X);
-		AddProperty("Bits", &Bits);
-		AddProperty("UpkeepPlayerId", &UpkeepPlayerId);
-		AddProperty("UnitTypeName", &UnitTypeName);
-	}
+	void AddProperties();
 };

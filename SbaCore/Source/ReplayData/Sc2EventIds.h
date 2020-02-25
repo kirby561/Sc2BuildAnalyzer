@@ -10,15 +10,15 @@ const double GameLoopsPerSecond = 22.4;
 class Sc2EventId {
 public:
 	enum Sc2EventIds {
-		Reserved0 = 0,
+		SPlayerStatsEvent = 0,
 		SUnitBornEvent = 1,
-		Reserved2 = 2,
-		Reserved3 = 3,
-		Reserved4 = 4,
+		SUnitDiedEvent = 2,
+		SUnitOwnerChangeEvent = 3,
+		SUnitTypeChangeEvent = 4,
 		SUpgradeEvent = 5,
 		SUnitInitEvent = 6,
-		Reserved7 = 7,
-		Reserved8 = 8,
+		SUnitDoneEvent = 7,
+		SUnitPositionsEvent = 8,
 		SPlayerSetupEvent = 9
 	};
 

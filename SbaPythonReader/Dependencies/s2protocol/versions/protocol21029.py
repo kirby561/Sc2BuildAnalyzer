@@ -169,7 +169,6 @@ typeinfos = [
     ('_struct',[[('m_recipient',17,-3),('m_string',22,-2)]]),  #142
     ('_struct',[[('m_recipient',17,-3),('m_point',67,-2)]]),  #143
     ('_struct',[[('m_progress',66,-2)]]),  #144
-    ('_struct',[[('m_playerId',37,-1)]]),  #145
 ]
 
 # Map from protocol NNet.Game.*Event eventid to (typeid, name)
@@ -274,13 +273,13 @@ tracker_event_types = {
 # needed these values should be tested against for None
 
 # The typeid of the NNet.Replay.Tracker.EEventId enum.
-tracker_eventid_typeid = None 
+tracker_eventid_typeid = None
 
 # The typeid of NNet.SVarUint32 (the type used to encode gameloop deltas).
 svaruint32_typeid = 6
 
 # The typeid of NNet.Replay.SGameUserId (the type used to encode player ids).
-replay_userid_typeid = 145
+replay_userid_typeid = None
 
 # The typeid of NNet.Replay.SHeader (the type used to store replay game version and length).
 replay_header_typeid = 11
@@ -294,7 +293,7 @@ replay_initdata_typeid = 55
 
 def _varuint32_value(value):
     # Returns the numeric value from a SVarUint32 instance.
-    for k,v in value.iteritems():
+    for v in value.values():
         return v
     return 0
 
@@ -317,7 +316,7 @@ def _decode_event_stream(decoder, eventid_typeid, event_types, decode_user_id):
         eventid = decoder.instance(eventid_typeid)
         typeid, typename = event_types.get(eventid, (None, None))
         if typeid is None:
-            raise CorruptedError('eventid(%d) at %s' % (eventid, decoder))
+            raise CorruptedError('eventid({}) at {}'.format(eventid, decoder))
 
         # decode the event struct instance
         event = decoder.instance(typeid)
@@ -400,7 +399,7 @@ def decode_replay_attributes_events(contents):
             value['namespace'] = buffer.read_bits(32)
             value['attrid'] = attrid = buffer.read_bits(32)
             scope = buffer.read_bits(8)
-            value['value'] = buffer.read_aligned_bytes(4)[::-1].strip('\x00')
+            value['value'] = buffer.read_aligned_bytes(4)[::-1].strip(b'\x00')
             if not scope in attributes['scopes']:
                 attributes['scopes'][scope] = {}
             if not attrid in attributes['scopes'][scope]:
